@@ -1325,10 +1325,15 @@ preceding Gap.<a href="#section-3.2-5.4.1" class="pilcrow">¶</a></p>
 accurate_ack_ecn (0x2051a5fa8648af) transport parameter (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4" class="relref">Section 7.4</a> of [<a href="#RFC9000" class="cite xref">RFC9000</a>]</span>) with an empty value. Implementations that understand this transport
 parameter <span class="bcp14">MUST</span> treat the receipt of a non-empty value as a connection error of
 type TRANSPORT_PARAMETER_ERROR.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">When using 0-RTT, both endpoints <span class="bcp14">MUST</span> remember the value of this transport
+<p id="section-4-2">After negotiating this extension, endpoints <span class="bcp14">MUST</span> report received packets using
+the ACCURATE_ACK_ECN frame. It is invalid to send regular ACK frames after
+negotiating this extension. Endpoints <span class="bcp14">MUST</span> close the connection using a
+PROTOCOL_VIOLATION error when they receive an ACK frame after this extension was
+negotiated.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-3">When using 0-RTT, both endpoints <span class="bcp14">MUST</span> remember the value of this transport
 parameter. This allows sending the frames defined by this extension in 0-RTT
 packets. If 0-RTT data is accepted by the server, the server <span class="bcp14">MUST NOT</span> disable
-this extension on the resumed connection.<a href="#section-4-2" class="pilcrow">¶</a></p>
+this extension on the resumed connection.<a href="#section-4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
