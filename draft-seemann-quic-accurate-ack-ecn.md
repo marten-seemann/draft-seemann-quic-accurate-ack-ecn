@@ -72,7 +72,7 @@ different encoding for ACK ranges (see below).
 
 ~~~
 ACCURATE_ACK_ECN Frame {
-  Type (i) = TBD,
+  Type (i) = 0x2051a5fa,
   Largest Acknowledged (i),
   ACK Delay (i),
   ACK Range Count (i),
