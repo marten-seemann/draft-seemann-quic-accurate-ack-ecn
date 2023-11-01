@@ -211,7 +211,7 @@ Table of Contents
 
 6.  IANA Considerations
 
-   This document has no IANA actions.
+   TODO consider IANA
 
 7.  Normative References
 
