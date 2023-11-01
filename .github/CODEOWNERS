@@ -1,0 +1,3 @@
+# Automatically generated CODEOWNERS
+# Regenerate with `make update-codeowners`
+draft-seemann-quic-accurate-ack-ecn.md martenseemann@gmail.com
