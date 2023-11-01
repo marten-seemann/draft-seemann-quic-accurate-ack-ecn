@@ -11,8 +11,8 @@
 ECT(0), one for the ECT(1) and one for the CE codepoint. From this information,
 the recipient of the ACK frame cannot deduce which packet was ECN-marked, if the
 ACK frame acknowledges multiple packets at once. 
-       This document defines an ACK frame that encodes enough information to encode
-what ECN marks each individual packet carried. 
+       This document defines an ACK frame that encodes enough information to indicate
+which ECN marks each individual packet carries. 
     " name="description">
 <meta content="xml2rfc 3.18.2" name="generator">
 <meta content="QUIC" name="keyword">
@@ -1070,8 +1070,8 @@ svg :is([fill="white"], [fill^="#fff"]) {
 ECT(0), one for the ECT(1) and one for the CE codepoint. From this information,
 the recipient of the ACK frame cannot deduce which packet was ECN-marked, if the
 ACK frame acknowledges multiple packets at once.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">This document defines an ACK frame that encodes enough information to encode
-what ECN marks each individual packet carried.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">This document defines an ACK frame that encodes enough information to indicate
+which ECN marks each individual packet carries.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1144,7 +1144,7 @@ what ECN marks each individual packet carried.<a href="#section-abstract-2" clas
             <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
-            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-accuratate_ack_ecn-frame" class="internal xref">ACCURATATE_ACK_ECN Frame</a></p>
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-accurate_ack_ecn-frame" class="internal xref">ACCURATE_ACK_ECN Frame</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
                 <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-first-ack-range" class="internal xref">First ACK Range</a></p>
@@ -1186,12 +1186,12 @@ that some packets were ECN-marked, but exactly which ones. This is in general
 not possible with the standard <span>[<a href="#RFC9000" class="cite xref">RFC9000</a>]</span> ACK frame, since it only contains
 cumulative ECN counts.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">This document defines an ACK frame that encodes the ECN codepoint alongside the
-ACK range. This encoding doesn't come for free: In the presence of ECN markings,
-this will lead to ACK frames containing more ACK ranges. However, it is expected
-that this doesn't inflate the size of ACK frames too much. For example, in the
+ACK range. This encoding comes at a cost: In the presence of ECN markings, this
+will lead to ACK frames containing more ACK ranges. However, this is not
+expected to significantly inflate the size of ACK frames.. For example, in the
 steady state, L4S <span>[<a href="#RFC9331" class="cite xref">RFC9331</a>]</span> leads to two packets being CE-marked per
 roundtrip. In that case, two of the ACK frames sent during that RTT would
-contain two instead of one ACK range.<a href="#section-1-2" class="pilcrow">¶</a></p>
+contain two ACK ranges instead of one.<a href="#section-1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-and-definitions">
@@ -1205,10 +1205,10 @@ described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</s
 appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="accuratateackecn-frame">
+<div id="accurateackecn-frame">
 <section id="section-3">
-      <h2 id="name-accuratate_ack_ecn-frame">
-<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-accuratate_ack_ecn-frame" class="section-name selfRef">ACCURATATE_ACK_ECN Frame</a>
+      <h2 id="name-accurate_ack_ecn-frame">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-accurate_ack_ecn-frame" class="section-name selfRef">ACCURATE_ACK_ECN Frame</a>
       </h2>
 <p id="section-3-1">The ACCURATE_ACK_ECN frame looks similar to an <span>[<a href="#RFC9000" class="cite xref">RFC9000</a>]</span> ACK frame. It uses a
 different encoding for ACK ranges (see below).<a href="#section-3-1" class="pilcrow">¶</a></p>
@@ -1237,7 +1237,7 @@ ACCURATE_ACK_ECN Frame {
 <pre>
 First ACK Range {
   ACK Range Length (i),
-  ECN marking (8),
+  ECN Marking (8),
 }
 </pre><a href="#section-3.1-1" class="pilcrow">¶</a>
 </div>
@@ -1250,11 +1250,11 @@ smallest packet acknowledged in the range is determined by subtracting the First
 ACK Range value from the Largest Acknowledged field.<a href="#section-3.1-2.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-3.1-2.3">ECN marking</dt>
+<dt id="section-3.1-2.3">ECN Marking:</dt>
           <dd style="margin-left: 1.5em" id="section-3.1-2.4">
             <p id="section-3.1-2.4.1">The ECN code point all packets in this range were received with: Non-ECT is
-encoded as 0, ECT(1) as 1, ECT(0) as 2 and CE as 3. Values larger or equal than
-4 are invalid, and the receiver <span class="bcp14">MUST</span> close the connection with a
+encoded as 0, ECT(1) as 1, ECT(0) as 2 and CE as 3. Values larger than or equal
+to 4 are invalid, and the receiver <span class="bcp14">MUST</span> close the connection with a
 FRAME_ENCODING_ERROR if it receives an ACK range with an invalid value.<a href="#section-3.1-2.4.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
@@ -1278,7 +1278,7 @@ one of each value is present for each value in the ACK Range Count field.<a href
 ACK Range {
   Gap (i),
   ACK Range Length (i),
-  ECN marking (8),
+  ECN Marking (8),
 }
 </pre>
 </div>
@@ -1292,7 +1292,7 @@ ACK Range {
           <dd style="margin-left: 1.5em" id="section-3.2-5.2">
             <p id="section-3.2-5.2.1">A variable-length integer indicating the number of contiguous unacknowledged
 packets preceding the packet number than the smallest in the preceding ACK
-Range. Note that this definition differes by one from the Gap definition of
+Range. Note that this definition differs by one from the Gap definition of
 the standard QUIC ACK frame in <span><a href="https://rfc-editor.org/rfc/rfc9000#section-19.3.1" class="relref">Section 19.3.1</a> of [<a href="#RFC9000" class="cite xref">RFC9000</a>]</span>. This is
 necessary to allow encoding of contiguous ranges of packet numbers that were
 received with different ECN markings.<a href="#section-3.2-5.2.1" class="pilcrow">¶</a></p>
@@ -1305,7 +1305,7 @@ packets preceding the largest packet number, as determined by the
 preceding Gap.<a href="#section-3.2-5.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-3.2-5.5">ECN marking:</dt>
+<dt id="section-3.2-5.5">ECN Marking:</dt>
           <dd style="margin-left: 1.5em" id="section-3.2-5.6">
             <p id="section-3.2-5.6.1">The ECN code point all packets in this range were received with, as defined in
 <a href="#first-ack-range" class="auto internal xref">Section 3.1</a>.<a href="#section-3.2-5.6.1" class="pilcrow">¶</a></p>
@@ -1322,7 +1322,7 @@ preceding Gap.<a href="#section-3.2-5.4.1" class="pilcrow">¶</a></p>
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-negotiating-extension-use" class="section-name selfRef">Negotiating Extension Use</a>
       </h2>
 <p id="section-4-1">Endpoints advertise their support of the extension by sending the
-address_discovery (0x2051a5fa8648af) transport parameter (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4" class="relref">Section 7.4</a> of [<a href="#RFC9000" class="cite xref">RFC9000</a>]</span>) with an empty value. Implementations that understand this transport
+accurate_ack_ecn (0x2051a5fa8648af) transport parameter (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-7.4" class="relref">Section 7.4</a> of [<a href="#RFC9000" class="cite xref">RFC9000</a>]</span>) with an empty value. Implementations that understand this transport
 parameter <span class="bcp14">MUST</span> treat the receipt of a non-empty value as a connection error of
 type TRANSPORT_PARAMETER_ERROR.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <p id="section-4-2">When using 0-RTT, both endpoints <span class="bcp14">MUST</span> remember the value of this transport
@@ -1336,10 +1336,10 @@ this extension on the resumed connection.<a href="#section-4-2" class="pilcrow">
       <h2 id="name-security-considerations">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-5-1">The sender of an ACK frame might be able to make its peer do by encoding a large
+<p id="section-5-1">The sender of an ACK frame might be able to burden its peer by encoding a large
 number of ACK ranges. With the ACK frame defined in <span>[<a href="#RFC9000" class="cite xref">RFC9000</a>]</span> it is not
 possible to split a contiguous sequence of packet numbers into multiple ranges,
-which is possible when using the ACCURATE_ACK_ECN frame. The number of ACK
+which becomes possible when using the ACCURATE_ACK_ECN frame. The number of ACK
 ranges is implicitely by the requirement that each frame fits into a QUIC
 packet. Receivers <span class="bcp14">SHOULD</span> make sure that they can process an ACCURATE_ACK_ECN
 frame containing a few hundred ACK ranges efficiently.<a href="#section-5-1" class="pilcrow">¶</a></p>

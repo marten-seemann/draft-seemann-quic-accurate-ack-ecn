@@ -20,7 +20,7 @@ Abstract
    packets at once.
 
    This document defines an ACK frame that encodes enough information to
-   encode what ECN marks each individual packet carried.
+   indicate which ECN marks each individual packet carries.
 
 About This Document
 
@@ -76,7 +76,7 @@ Table of Contents
 
    1.  Introduction
    2.  Conventions and Definitions
-   3.  ACCURATATE_ACK_ECN Frame
+   3.  ACCURATE_ACK_ECN Frame
      3.1.  First ACK Range
      3.2.  ACK Ranges
    4.  Negotiating Extension Use
@@ -94,13 +94,13 @@ Table of Contents
    ACK frame, since it only contains cumulative ECN counts.
 
    This document defines an ACK frame that encodes the ECN codepoint
-   alongside the ACK range.  This encoding doesn't come for free: In the
+   alongside the ACK range.  This encoding comes at a cost: In the
    presence of ECN markings, this will lead to ACK frames containing
-   more ACK ranges.  However, it is expected that this doesn't inflate
-   the size of ACK frames too much.  For example, in the steady state,
+   more ACK ranges.  However, this is not expected to significantly
+   inflate the size of ACK frames.. For example, in the steady state,
    L4S [RFC9331] leads to two packets being CE-marked per roundtrip.  In
    that case, two of the ACK frames sent during that RTT would contain
-   two instead of one ACK range.
+   two ACK ranges instead of one.
 
 2.  Conventions and Definitions
 
@@ -110,7 +110,7 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-3.  ACCURATATE_ACK_ECN Frame
+3.  ACCURATE_ACK_ECN Frame
 
    The ACCURATE_ACK_ECN frame looks similar to an [RFC9000] ACK frame.
    It uses a different encoding for ACK ranges (see below).
@@ -135,7 +135,7 @@ Table of Contents
 
    First ACK Range {
      ACK Range Length (i),
-     ECN marking (8),
+     ECN Marking (8),
    }
 
    ACK Range Length:  A variable-length integer indicating the number of
@@ -144,11 +144,11 @@ Table of Contents
       the range is determined by subtracting the First ACK Range value
       from the Largest Acknowledged field.
 
-   ECN marking  The ECN code point all packets in this range were
+   ECN Marking:  The ECN code point all packets in this range were
       received with: Non-ECT is encoded as 0, ECT(1) as 1, ECT(0) as 2
-      and CE as 3.  Values larger or equal than 4 are invalid, and the
-      receiver MUST close the connection with a FRAME_ENCODING_ERROR if
-      it receives an ACK range with an invalid value.
+      and CE as 3.  Values larger than or equal to 4 are invalid, and
+      the receiver MUST close the connection with a FRAME_ENCODING_ERROR
+      if it receives an ACK range with an invalid value.
 
 3.2.  ACK Ranges
 
@@ -163,7 +163,7 @@ Table of Contents
    ACK Range {
      Gap (i),
      ACK Range Length (i),
-     ECN marking (8),
+     ECN Marking (8),
    }
 
                             Figure 1: ACK Ranges
@@ -173,7 +173,7 @@ Table of Contents
    Gap:  A variable-length integer indicating the number of contiguous
       unacknowledged packets preceding the packet number than the
       smallest in the preceding ACK Range.  Note that this definition
-      differes by one from the Gap definition of the standard QUIC ACK
+      differs by one from the Gap definition of the standard QUIC ACK
       frame in Section 19.3.1 of [RFC9000].  This is necessary to allow
       encoding of contiguous ranges of packet numbers that were received
       with different ECN markings.
@@ -182,13 +182,13 @@ Table of Contents
       contiguous acknowledged packets preceding the largest packet
       number, as determined by the preceding Gap.
 
-   ECN marking:  The ECN code point all packets in this range were
+   ECN Marking:  The ECN code point all packets in this range were
       received with, as defined in Section 3.1.
 
 4.  Negotiating Extension Use
 
    Endpoints advertise their support of the extension by sending the
-   address_discovery (0x2051a5fa8648af) transport parameter (Section 7.4
+   accurate_ack_ecn (0x2051a5fa8648af) transport parameter (Section 7.4
    of [RFC9000]) with an empty value.  Implementations that understand
    this transport parameter MUST treat the receipt of a non-empty value
    as a connection error of type TRANSPORT_PARAMETER_ERROR.
@@ -200,10 +200,10 @@ Table of Contents
 
 5.  Security Considerations
 
-   The sender of an ACK frame might be able to make its peer do by
+   The sender of an ACK frame might be able to burden its peer by
    encoding a large number of ACK ranges.  With the ACK frame defined in
    [RFC9000] it is not possible to split a contiguous sequence of packet
-   numbers into multiple ranges, which is possible when using the
+   numbers into multiple ranges, which becomes possible when using the
    ACCURATE_ACK_ECN frame.  The number of ACK ranges is implicitely by
    the requirement that each frame fits into a QUIC packet.  Receivers
    SHOULD make sure that they can process an ACCURATE_ACK_ECN frame
