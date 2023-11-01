@@ -158,6 +158,12 @@ RFC9000}}) with an empty value. Implementations that understand this transport
 parameter MUST treat the receipt of a non-empty value as a connection error of
 type TRANSPORT_PARAMETER_ERROR.
 
+After negotiating this extension, endpoints MUST report received packets using
+the ACCURATE_ACK_ECN frame. It is invalid to send regular ACK frames after
+negotiating this extension. Endpoints MUST close the connection using a
+PROTOCOL_VIOLATION error when they receive an ACK frame after this extension was
+negotiated.
+
 When using 0-RTT, both endpoints MUST remember the value of this transport
 parameter. This allows sending the frames defined by this extension in 0-RTT
 packets. If 0-RTT data is accepted by the server, the server MUST NOT disable
