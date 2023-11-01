@@ -156,7 +156,8 @@ Table of Contents
    marking values in descending packet number order.  ACK Ranges can be
    repeated.  The number of Gap and ACK Range Length values is
    determined by the ACK Range Count field; one of each value is present
-   for each value in the ACK Range Count field.
+   for each value in the ACK Range Count field.  All packets within one
+   ACK range were received with the same ECN marking.
 
    ACK Ranges are structured as shown in Figure 1.
 
