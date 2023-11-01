@@ -115,7 +115,8 @@ FRAME_ENCODING_ERROR if it receives an ACK range with an invalid value.
 Each ACK Range consists of alternating Gap, ACK Range Length and ECN marking
 values in descending packet number order. ACK Ranges can be repeated. The number
 of Gap and ACK Range Length values is determined by the ACK Range Count field;
-one of each value is present for each value in the ACK Range Count field.
+one of each value is present for each value in the ACK Range Count field. All
+packets within one ACK range were received with the same ECN marking.
 
 ACK Ranges are structured as shown in {{ack-range-format}}.
 
