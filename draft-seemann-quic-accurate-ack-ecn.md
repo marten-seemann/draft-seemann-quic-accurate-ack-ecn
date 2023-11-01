@@ -37,28 +37,30 @@ informative:
 
 QUIC defines a variant of the ACK frame that carries three counters, one for the
 ECT(0), one for the ECT(1) and one for the CE codepoint. From this information,
-the recipient of the ACK frame cannot deduce which packet was ECN-marked, if the
-ACK frame acknowledges multiple packets at once.
+the recipient of the ACK frame cannot deduce which ECN marking the individual
+packets were received with.
 
-This document defines an ACK frame that encodes enough information to indicate
-which ECN marks each individual packet carries.
+This document defines an alternative ACK frame that encodes enough information
+to indicate which ECN marks each individual packet was received with..
 
 --- middle
 
 # Introduction
 
 Some advanced congestion control algorithms would benefit from not only knowing
-that some packets were ECN-marked, but exactly which ones. This is in general
-not possible with the standard {{!RFC9000}} ACK frame, since it only contains
-cumulative ECN counts.
+that some packets were ECN-marked, but exactly which ones. In the general case,
+this is not possible with the standard {{!RFC9000}} ACK frame, since it only
+contains cumulative ECN counts.
 
-This document defines an ACK frame that encodes the ECN codepoint alongside the
-ACK range. This encoding comes at a cost: In the presence of ECN markings, this
-will lead to ACK frames containing more ACK ranges. However, this is not
-expected to significantly inflate the size of ACK frames.. For example, in the
-steady state, L4S {{!RFC9331}} leads to two packets being CE-marked per
-roundtrip. In that case, two of the ACK frames sent during that RTT would
-contain two ACK ranges instead of one.
+This document defines an alternative ACK frame, the ACCURATE_ACK_ECN frame,
+which encodes the ECN codepoint alongside the ACK range. This encoding comes at
+a cost: In the presence of ECN markings, this will lead to ACCURATE_ACK_ECN
+frames containing more ACK ranges compared to a regular ACK frame. However, this
+is not expected to significantly inflate the size of ACCURATE_ACK_ECN frames.
+For example, in the steady state, L4S {{!RFC9331}} applies the CE marking to two
+packets per roundtrip. In the absence of packet loss, two of the
+ACCURATE_ACK_ECN frames sent during that RTT would contain two ACK ranges
+instead of one.
 
 
 # Conventions and Definitions
@@ -68,7 +70,7 @@ contain two ACK ranges instead of one.
 # ACCURATE_ACK_ECN Frame
 
 The ACCURATE_ACK_ECN frame looks similar to an {{!RFC9000}} ACK frame. It uses a
-different encoding for ACK ranges (see below).
+different encoding for ACK ranges (see {{first-ack-range}} and {{ack-ranges}}).
 
 ~~~
 ACCURATE_ACK_ECN Frame {
@@ -112,11 +114,14 @@ FRAME_ENCODING_ERROR if it receives an ACK range with an invalid value.
 
 ## ACK Ranges {#ack-ranges}
 
-Each ACK Range consists of alternating Gap, ACK Range Length and ECN marking
+Each ACK Range consists of alternating Gap, ACK Range Length and ECN Marking
 values in descending packet number order. ACK Ranges can be repeated. The number
-of Gap and ACK Range Length values is determined by the ACK Range Count field;
-one of each value is present for each value in the ACK Range Count field. All
-packets within one ACK range were received with the same ECN marking.
+of ranges is determined by the ACK Range Count field; one of each value is
+present for each value in the ACK Range Count field.
+
+All packets within one ACK range were received with the same ECN marking. If a
+range of packets with contiguous packet numbers, but different ECN markings is
+received, this MUST be reported using multiple ACK ranges.
 
 ACK Ranges are structured as shown in {{ack-range-format}}.
 
@@ -160,25 +165,29 @@ parameter MUST treat the receipt of a non-empty value as a connection error of
 type TRANSPORT_PARAMETER_ERROR.
 
 After negotiating this extension, endpoints MUST report received packets using
-the ACCURATE_ACK_ECN frame. It is invalid to send regular ACK frames after
-negotiating this extension. Endpoints MUST close the connection using a
-PROTOCOL_VIOLATION error when they receive an ACK frame after this extension was
-negotiated.
+the ACCURATE_ACK_ECN frame. This only applies to the application data packet
+number space. Initial and Handshake packets are acknowledged using the regular
+ACK frame.
+
+It is invalid to send regular ACK frames in the application data packet number
+space after negotiating this extension. Endpoints MUST close the connection
+using a PROTOCOL_VIOLATION error when they receive an ACK frame in the
+application data packet number space after this extension was negotiated.
 
 When using 0-RTT, both endpoints MUST remember the value of this transport
-parameter. This allows sending the frames defined by this extension in 0-RTT
-packets. If 0-RTT data is accepted by the server, the server MUST NOT disable
+parameter. This allows acknowledging 0-RTT packets using ACCURATE_ACK_ECN
+frames. If 0-RTT data is accepted by the server, the server MUST NOT disable
 this extension on the resumed connection.
 
 # Security Considerations
 
-The sender of an ACK frame might be able to burden its peer by encoding a large
-number of ACK ranges. With the ACK frame defined in {{RFC9000}} it is not
-possible to split a contiguous sequence of packet numbers into multiple ranges,
-which becomes possible when using the ACCURATE_ACK_ECN frame. The number of ACK
-ranges is implicitely by the requirement that each frame fits into a QUIC
-packet. Receivers SHOULD make sure that they can process an ACCURATE_ACK_ECN
-frame containing a few hundred ACK ranges efficiently.
+The sender of an ACCURATE_ACK_ECN frame might be able to burden its peer by
+encoding a large number of ACK ranges. With the ACK frame defined in {{RFC9000}}
+it is not possible to split a contiguous sequence of packet numbers into
+multiple ranges, which becomes possible when using the ACCURATE_ACK_ECN frame.
+The number of ACK ranges is implicitely by the requirement that each frame fits
+into a QUIC packet. Receivers SHOULD make sure that they can process an
+ACCURATE_ACK_ECN frame containing a few hundred ACK ranges efficiently.
 
 # IANA Considerations
 
