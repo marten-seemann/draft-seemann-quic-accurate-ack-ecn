@@ -1,0 +1,79 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2023-11-02T00:13:28.881233+00:00",
+  "repo": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOKns0ts51nPyO",
+      "title": "Different ECN marking on a contiguous range of packets",
+      "url": "https://github.com/marten-seemann/draft-seemann-quic-accurate-ack-ecn/issues/1",
+      "state": "OPEN",
+      "author": "goelvidhi",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "As I was saying on the email list, it may be possible that the receiver receives a mix of CE and ECT packets which it may not ACK immediately due to more frequent CE marking in case of L4S.\r\n\r\nThe below field and the ACK_RANGES field assumes that ECN Marking will be same for all the packets from smallest to largest in that block. This may not be true. Probably a solution is create a new ACK Range for whenever the ECT value changes even if there is no gap.\r\n```\r\nFirst ACK Range {\r\n  ACK Range Length (i),\r\n  ECN Marking (8),\r\n}\r\n```",
+      "createdAt": "2023-11-01T22:51:27Z",
+      "updatedAt": "2023-11-01T23:20:37Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "marten-seemann",
+          "authorAssociation": "OWNER",
+          "body": "Yes, that was exactly the intention of this draft! As soon as the ECN marking changes, you need to create a new ACK range.\r\n\r\nany suggestion how to make this clearer?",
+          "createdAt": "2023-11-01T23:20:37Z",
+          "updatedAt": "2023-11-01T23:20:37Z"
+        }
+      ]
+    }
+  ],
+  "pulls": []
+}
