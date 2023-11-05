@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-02T00:13:28.881233+00:00",
+  "timestamp": "2023-11-05T00:14:58.170361+00:00",
   "repo": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
   "labels": [
     {
@@ -75,5 +75,32 @@
       ]
     }
   ],
-  "pulls": []
+  "pulls": [
+    {
+      "number": 2,
+      "id": "PR_kwDOKns0ts5eYlqN",
+      "title": "clarify about same ECN code point, add formula for smallest and large\u2026",
+      "url": "https://github.com/marten-seemann/draft-seemann-quic-accurate-ack-ecn/pull/2",
+      "state": "OPEN",
+      "author": "goelvidhi",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I attempted to clarify by adding some more details and an example. Probably this PR is going to need more updates. Looking forward to hear your feedback.",
+      "createdAt": "2023-11-02T00:51:54Z",
+      "updatedAt": "2023-11-02T14:52:28Z",
+      "baseRepository": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
+      "baseRefName": "main",
+      "baseRefOid": "974780818838ab774a3c9006b863671793dbc772",
+      "headRepository": "goelvidhi/draft-seemann-quic-accurate-ack-ecn",
+      "headRefName": "edits-to-ecn-codepoint-and-example",
+      "headRefOid": "1b31e40ca696adf55aed9e6f980acf75d3d788f9",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    }
+  ]
 }
