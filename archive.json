@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-09T00:13:38.501267+00:00",
+  "timestamp": "2023-11-12T00:15:04.782625+00:00",
   "repo": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
   "labels": [
     {
@@ -73,6 +73,22 @@
           "updatedAt": "2023-11-01T23:20:37Z"
         }
       ]
+    },
+    {
+      "number": 3,
+      "id": "I_kwDOKns0ts52YAQ-",
+      "title": "knowing packet number helps after quiescence",
+      "url": "https://github.com/marten-seemann/draft-seemann-quic-accurate-ack-ecn/issues/3",
+      "state": "OPEN",
+      "author": "marten-seemann",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "In RFC 9000:\r\n\r\nAssume you send a number of non-ack-eliciting packets and they get CE marked. These CE marks won't be reported at all.\r\n\r\nThen after a while, you start sending data, and suddenly get an ACK frame that reports these CE marks. You now don't know if these are outdated or more recent CE marks.",
+      "createdAt": "2023-11-09T16:34:45Z",
+      "updatedAt": "2023-11-09T16:34:45Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
