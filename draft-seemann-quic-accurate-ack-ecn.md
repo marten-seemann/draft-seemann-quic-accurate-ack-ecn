@@ -41,7 +41,7 @@ the recipient of the ACK frame cannot deduce which ECN marking the individual
 packets were received with.
 
 This document defines an alternative ACK frame that encodes enough information
-to indicate which ECN mark each individual packet was received with at the receiver.
+to indicate which ECN mark each individual packet was received with.
 
 --- middle
 
