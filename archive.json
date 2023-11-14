@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-12T00:15:04.782625+00:00",
+  "timestamp": "2023-11-14T00:14:08.269448+00:00",
   "repo": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
   "labels": [
     {
@@ -104,7 +104,7 @@
       "labels": [],
       "body": "I attempted to clarify by adding some more details and an example. Probably this PR is going to need more updates. Looking forward to hear your feedback.",
       "createdAt": "2023-11-02T00:51:54Z",
-      "updatedAt": "2023-11-02T14:52:28Z",
+      "updatedAt": "2023-11-13T22:48:13Z",
       "baseRepository": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
       "baseRefName": "main",
       "baseRefOid": "974780818838ab774a3c9006b863671793dbc772",
@@ -116,7 +116,34 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKns0ts5l8_d6",
+          "commit": {
+            "abbreviatedOid": "1b31e40"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "Thank you @goelvidhi, and sorry for the long time it took me to review the PR!",
+          "createdAt": "2023-11-02T14:45:46Z",
+          "updatedAt": "2023-11-13T22:48:13Z",
+          "comments": [
+            {
+              "originalPosition": 44,
+              "body": "```suggestion\r\nAll packets within an ACK range MUST have been received with the same ECN code point.\r\n```",
+              "createdAt": "2023-11-02T14:45:46Z",
+              "updatedAt": "2023-11-13T22:48:13Z"
+            },
+            {
+              "originalPosition": 13,
+              "body": "\"received with at the receiver\" sounds weird.\r\n\r\n```suggestion\r\nto indicate which ECN mark each individual packet was received with.\r\n```",
+              "createdAt": "2023-11-13T22:45:02Z",
+              "updatedAt": "2023-11-13T22:48:13Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
