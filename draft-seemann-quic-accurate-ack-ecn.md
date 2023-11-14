@@ -88,7 +88,7 @@ ACCURATE_ACK_ECN Frame {
 Except for the two ACK Range fields, all the fields are the same as defined in
 {{Section 19.3 of RFC9000}}.
 
-All packets within an ACK range MUST be received with the same ECN code point.
+All packets within an ACK range MUST have been received with the same ECN code point.
 If a range of packets with contiguous packet numbers, but different ECN markings
 is received, this MUST be reported using multiple ACK ranges.
 
