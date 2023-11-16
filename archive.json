@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-11-14T00:14:08.269448+00:00",
+  "timestamp": "2023-11-16T00:14:14.541280+00:00",
   "repo": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
   "labels": [
     {
@@ -104,13 +104,13 @@
       "labels": [],
       "body": "I attempted to clarify by adding some more details and an example. Probably this PR is going to need more updates. Looking forward to hear your feedback.",
       "createdAt": "2023-11-02T00:51:54Z",
-      "updatedAt": "2023-11-13T22:48:13Z",
+      "updatedAt": "2023-11-14T02:43:37Z",
       "baseRepository": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
       "baseRefName": "main",
       "baseRefOid": "974780818838ab774a3c9006b863671793dbc772",
       "headRepository": "goelvidhi/draft-seemann-quic-accurate-ack-ecn",
       "headRefName": "edits-to-ecn-codepoint-and-example",
-      "headRefOid": "1b31e40ca696adf55aed9e6f980acf75d3d788f9",
+      "headRefOid": "668f5958f6afd6645e7b0d813fd9e493c99751e1",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
