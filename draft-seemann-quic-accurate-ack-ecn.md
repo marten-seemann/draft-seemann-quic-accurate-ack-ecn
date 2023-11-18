@@ -35,28 +35,30 @@ informative:
 
 --- abstract
 
-QUIC defines a variant of the ACK frame that carries three counters, one for the
-ECT(0), one for the ECT(1) and one for the CE codepoint. From this information,
+QUIC defines a variant of the ACK frame that carries cumulative count for
+each of the three ECN codepoints (ECT(1), ECT(0) and CE). From this information,
 the recipient of the ACK frame cannot deduce which ECN marking the individual
 packets were received with.
 
 This document defines an alternative ACK frame that encodes enough information
-to indicate which ECN marks each individual packet was received with..
+to indicate which ECN mark each individual packet was received with.
 
 --- middle
 
 # Introduction
 
-Some advanced congestion control algorithms would benefit from not only knowing
-that some packets were ECN-marked, but exactly which ones. In the general case,
+Some congestion control algorithms would benefit from not only knowing
+that some packets were marked with Congestion Experienced (CE) bit,
+but exactly which ones. In the general case,
 this is not possible with the standard {{!RFC9000}} ACK frame, since it only
 contains cumulative ECN counts.
 
 This document defines an alternative ACK frame, the ACCURATE_ACK_ECN frame,
-which encodes the ECN codepoint alongside the ACK range. This encoding comes at
-a cost: In the presence of ECN markings, this will lead to ACCURATE_ACK_ECN
-frames containing more ACK ranges compared to a regular ACK frame. However, this
-is not expected to significantly inflate the size of ACCURATE_ACK_ECN frames.
+which encodes the corresponding ECN codepoint alongside the ACK range.
+This encoding comes at a cost: In the presence of ECN markings, this will lead
+to ACCURATE_ACK_ECN frames containing more ACK ranges compared to a regular
+ACK frame. However, this is not expected to significantly inflate the size of
+ACCURATE_ACK_ECN frames.
 For example, in the steady state, L4S {{!RFC9331}} applies the CE marking to two
 packets per roundtrip. In the absence of packet loss, two of the
 ACCURATE_ACK_ECN frames sent during that RTT would contain two ACK ranges
@@ -86,6 +88,10 @@ ACCURATE_ACK_ECN Frame {
 Except for the two ACK Range fields, all the fields are the same as defined in
 {{Section 19.3 of RFC9000}}.
 
+All packets within an ACK range MUST have been received with the same ECN code point.
+If a range of packets with contiguous packet numbers, but different ECN markings
+is received, this MUST be reported using multiple ACK ranges.
+
 Similar to regular ACK frames, ACCURATE_ACK_ECN frames are not ack-eliciting
 (see {{Section 13.2 of RFC9000}}), nor are they congestion-controlled.
 
@@ -101,16 +107,17 @@ First ACK Range {
 ACK Range Length:
 
 : A variable-length integer indicating the number of contiguous packets
-preceding the Largest Acknowledged that are being acknowledged. That is, the
-smallest packet acknowledged in the range is determined by subtracting the First
-ACK Range value from the Largest Acknowledged field.
+preceding the Largest Acknowledged that are being acknowledged with the same
+ECN code point. That is, the smallest packet acknowledged in the range
+with the same ECN code point is determined by subtracting the First ACK Range
+Length value from the Largest Acknowledged field.
 
 ECN Marking:
 
 : The ECN code point all packets in this range were received with: Non-ECT is
 encoded as 0, ECT(1) as 1, ECT(0) as 2 and CE as 3. Values larger than or equal
 to 4 are invalid, and the receiver MUST close the connection with a
-FRAME_ENCODING_ERROR if it receives an ACK range with an invalid value.
+FRAME_ENCODING_ERROR if it receives an ACK range with an invalid ECN marking value.
 
 ## ACK Ranges {#ack-ranges}
 
@@ -118,10 +125,6 @@ Each ACK Range consists of alternating Gap, ACK Range Length and ECN Marking
 values in descending packet number order. ACK Ranges can be repeated. The number
 of ranges is determined by the ACK Range Count field; one of each value is
 present for each value in the ACK Range Count field.
-
-All packets within one ACK range were received with the same ECN marking. If a
-range of packets with contiguous packet numbers, but different ECN markings is
-received, this MUST be reported using multiple ACK ranges.
 
 ACK Ranges are structured as shown in {{ack-range-format}}.
 
@@ -139,7 +142,7 @@ The fields that form each ACK Range are:
 Gap:
 
 : A variable-length integer indicating the number of contiguous unacknowledged
-  packets preceding the packet number than the smallest in the preceding ACK
+  packets preceding the packet number given by the smallest in the preceding ACK
   Range. Note that this definition differs by one from the Gap definition of
   the standard QUIC ACK frame in {{Section 19.3.1 of RFC9000}}. This is
   necessary to allow encoding of contiguous ranges of packet numbers that were
@@ -155,6 +158,63 @@ ECN Marking:
 
 : The ECN code point all packets in this range were received with, as defined in
   {{first-ack-range}}.
+
+As described in {{Section 19.3.1 of RFC9000}}, given a largest packet number for
+an ACK range, the smallest value is determined by:
+
+~~~
+smallest = largest - ack_range
+~~~
+
+To calculate the largest value for a subsequent ACK Range, the formula differs
+from the standard QUIC ACK frame which can be calculated using:
+
+~~~
+largest = previous_smallest - gap - 1
+~~~
+
+If any computed packet number is negative, an endpoint MUST generate a connection
+error of type FRAME_ENCODING_ERROR.
+
+## Example
+
+Consider a scenario where 10 packets (from packet number 1 to 10) were sent with
+ECT(1) but receiver received a total of 9 packets where packet number 8 was lost
+and packet number 6 and 9 were CE marked. The ACCURATE_ACK_ECN frame would look
+like below.
+
+~~~
+ACCURATE_ACK_ECN Frame {
+  Type (i) = 0x2051a5fa,
+  Largest Acknowledged (10),
+  ACK Delay (i),
+  ACK Range Count (4),
+  First ACK Range {
+    ACK Range Length (0),
+    ECN Marking (1),
+  },
+  ACK Range {
+    Gap (0),
+    ACK Range Length (0),
+    ECN Marking (3),
+  }
+  ACK Range {
+    Gap (1),
+    ACK Range Length (0),
+    ECN Marking (1),
+  }
+  ACK Range {
+    Gap (0),
+    ACK Range Length (0),
+    ECN Marking (3),
+  }
+  ACK Range {
+    Gap (0),
+    ACK Range Length (4),
+    ECN Marking (1),
+  }
+}
+~~~
 
 # Negotiating Extension Use {#negotiate-extension}
 
