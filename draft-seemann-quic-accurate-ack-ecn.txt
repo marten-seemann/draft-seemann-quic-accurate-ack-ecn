@@ -3,7 +3,7 @@
 
 
 QUIC                                                          M. Seemann
-Internet-Draft                                             Protocol Labs
+Internet-Draft                                                          
 Intended status: Standards Track                                 V. Goel
 Expires: 20 August 2024                                       Apple Inc.
                                                         17 February 2024
@@ -318,7 +318,6 @@ Acknowledgments
 Authors' Addresses
 
    Marten Seemann
-   Protocol Labs
    Email: martenseemann@gmail.com
 
 
