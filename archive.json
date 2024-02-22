@@ -1,0 +1,249 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2024-02-22T00:13:34.005163+00:00",
+  "repo": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOKns0ts51nPyO",
+      "title": "Different ECN marking on a contiguous range of packets",
+      "url": "https://github.com/marten-seemann/draft-seemann-quic-accurate-ack-ecn/issues/1",
+      "state": "OPEN",
+      "author": "goelvidhi",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "As I was saying on the email list, it may be possible that the receiver receives a mix of CE and ECT packets which it may not ACK immediately due to more frequent CE marking in case of L4S.\r\n\r\nThe below field and the ACK_RANGES field assumes that ECN Marking will be same for all the packets from smallest to largest in that block. This may not be true. Probably a solution is create a new ACK Range for whenever the ECT value changes even if there is no gap.\r\n```\r\nFirst ACK Range {\r\n  ACK Range Length (i),\r\n  ECN Marking (8),\r\n}\r\n```",
+      "createdAt": "2023-11-01T22:51:27Z",
+      "updatedAt": "2023-11-01T23:20:37Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "marten-seemann",
+          "authorAssociation": "OWNER",
+          "body": "Yes, that was exactly the intention of this draft! As soon as the ECN marking changes, you need to create a new ACK range.\r\n\r\nany suggestion how to make this clearer?",
+          "createdAt": "2023-11-01T23:20:37Z",
+          "updatedAt": "2023-11-01T23:20:37Z"
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "id": "I_kwDOKns0ts52YAQ-",
+      "title": "knowing packet number helps after quiescence",
+      "url": "https://github.com/marten-seemann/draft-seemann-quic-accurate-ack-ecn/issues/3",
+      "state": "OPEN",
+      "author": "marten-seemann",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "In RFC 9000:\r\n\r\nAssume you send a number of non-ack-eliciting packets and they get CE marked. These CE marks won't be reported at all.\r\n\r\nThen after a while, you start sending data, and suddenly get an ACK frame that reports these CE marks. You now don't know if these are outdated or more recent CE marks.",
+      "createdAt": "2023-11-09T16:34:45Z",
+      "updatedAt": "2023-11-09T16:34:45Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
+  "pulls": [
+    {
+      "number": 2,
+      "id": "PR_kwDOKns0ts5eYlqN",
+      "title": "clarify about same ECN code point, add formula for smallest and large\u2026",
+      "url": "https://github.com/marten-seemann/draft-seemann-quic-accurate-ack-ecn/pull/2",
+      "state": "MERGED",
+      "author": "goelvidhi",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I attempted to clarify by adding some more details and an example. Probably this PR is going to need more updates. Looking forward to hear your feedback.",
+      "createdAt": "2023-11-02T00:51:54Z",
+      "updatedAt": "2023-11-18T04:55:38Z",
+      "baseRepository": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
+      "baseRefName": "main",
+      "baseRefOid": "974780818838ab774a3c9006b863671793dbc772",
+      "headRepository": "goelvidhi/draft-seemann-quic-accurate-ack-ecn",
+      "headRefName": "edits-to-ecn-codepoint-and-example",
+      "headRefOid": "668f5958f6afd6645e7b0d813fd9e493c99751e1",
+      "closedAt": "2023-11-18T04:55:38Z",
+      "mergedAt": "2023-11-18T04:55:38Z",
+      "mergedBy": "marten-seemann",
+      "mergeCommit": {
+        "oid": "6905b23323471a6e6c61cc38b6775b676f275ba0"
+      },
+      "comments": [
+        {
+          "author": "goelvidhi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@marten-seemann are there any more comments or is this ready to merge? ",
+          "createdAt": "2023-11-18T03:01:56Z",
+          "updatedAt": "2023-11-18T03:01:56Z"
+        },
+        {
+          "author": "marten-seemann",
+          "authorAssociation": "OWNER",
+          "body": "Thank you for this PR @goelvidhi, this was very helpful!",
+          "createdAt": "2023-11-18T04:55:33Z",
+          "updatedAt": "2023-11-18T04:55:33Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKns0ts5l8_d6",
+          "commit": {
+            "abbreviatedOid": "1b31e40"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "Thank you @goelvidhi, and sorry for the long time it took me to review the PR!",
+          "createdAt": "2023-11-02T14:45:46Z",
+          "updatedAt": "2023-11-13T22:48:13Z",
+          "comments": [
+            {
+              "originalPosition": 44,
+              "body": "```suggestion\r\nAll packets within an ACK range MUST have been received with the same ECN code point.\r\n```",
+              "createdAt": "2023-11-02T14:45:46Z",
+              "updatedAt": "2023-11-13T22:48:13Z"
+            },
+            {
+              "originalPosition": 13,
+              "body": "\"received with at the receiver\" sounds weird.\r\n\r\n```suggestion\r\nto indicate which ECN mark each individual packet was received with.\r\n```",
+              "createdAt": "2023-11-13T22:45:02Z",
+              "updatedAt": "2023-11-13T22:48:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKns0ts5nmzgQ",
+          "commit": {
+            "abbreviatedOid": "668f595"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-11-18T04:54:52Z",
+          "updatedAt": "2023-11-18T04:54:52Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "id": "PR_kwDOKns0ts5nJiO2",
+      "title": "add as co-author",
+      "url": "https://github.com/marten-seemann/draft-seemann-quic-accurate-ack-ecn/pull/4",
+      "state": "MERGED",
+      "author": "goelvidhi",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-02-17T02:12:00Z",
+      "updatedAt": "2024-02-17T02:46:42Z",
+      "baseRepository": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
+      "baseRefName": "main",
+      "baseRefOid": "6905b23323471a6e6c61cc38b6775b676f275ba0",
+      "headRepository": "goelvidhi/draft-seemann-quic-accurate-ack-ecn",
+      "headRefName": "add-coauthor",
+      "headRefOid": "96b3738d41a8cf0be747219b19085ecc8daa1fea",
+      "closedAt": "2024-02-17T02:46:42Z",
+      "mergedAt": "2024-02-17T02:46:41Z",
+      "mergedBy": "marten-seemann",
+      "mergeCommit": {
+        "oid": "100cc4b6893ecbebcfd8450c57d523d3cac76eaf"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKns0ts5wbvS_",
+          "commit": {
+            "abbreviatedOid": "96b3738"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-02-17T02:46:35Z",
+          "updatedAt": "2024-02-17T02:46:35Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "id": "PR_kwDOKns0ts5nJkxq",
+      "title": "remove Marten's affiliation",
+      "url": "https://github.com/marten-seemann/draft-seemann-quic-accurate-ack-ecn/pull/5",
+      "state": "MERGED",
+      "author": "marten-seemann",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-02-17T02:47:24Z",
+      "updatedAt": "2024-02-17T03:05:11Z",
+      "baseRepository": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
+      "baseRefName": "main",
+      "baseRefOid": "100cc4b6893ecbebcfd8450c57d523d3cac76eaf",
+      "headRepository": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
+      "headRefName": "remove-protocol-labs",
+      "headRefOid": "b039179b3b01a363b6addb3ba21369e1f7a1e536",
+      "closedAt": "2024-02-17T03:05:11Z",
+      "mergedAt": "2024-02-17T03:05:11Z",
+      "mergedBy": "marten-seemann",
+      "mergeCommit": {
+        "oid": "20a33858e283be125a3b737792a5155370bbda33"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
+}
