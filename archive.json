@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-03-19T00:14:14.074282+00:00",
+  "timestamp": "2024-03-21T00:14:55.687006+00:00",
   "repo": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
   "labels": [
     {
@@ -55,15 +55,15 @@
       "id": "I_kwDOKns0ts51nPyO",
       "title": "Different ECN marking on a contiguous range of packets",
       "url": "https://github.com/marten-seemann/draft-seemann-quic-accurate-ack-ecn/issues/1",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "goelvidhi",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "As I was saying on the email list, it may be possible that the receiver receives a mix of CE and ECT packets which it may not ACK immediately due to more frequent CE marking in case of L4S.\r\n\r\nThe below field and the ACK_RANGES field assumes that ECN Marking will be same for all the packets from smallest to largest in that block. This may not be true. Probably a solution is create a new ACK Range for whenever the ECT value changes even if there is no gap.\r\n```\r\nFirst ACK Range {\r\n  ACK Range Length (i),\r\n  ECN Marking (8),\r\n}\r\n```",
       "createdAt": "2023-11-01T22:51:27Z",
-      "updatedAt": "2023-11-01T23:20:37Z",
-      "closedAt": null,
+      "updatedAt": "2024-03-20T01:55:56Z",
+      "closedAt": "2024-03-20T01:55:56Z",
       "comments": [
         {
           "author": "marten-seemann",
@@ -71,6 +71,13 @@
           "body": "Yes, that was exactly the intention of this draft! As soon as the ECN marking changes, you need to create a new ACK range.\r\n\r\nany suggestion how to make this clearer?",
           "createdAt": "2023-11-01T23:20:37Z",
           "updatedAt": "2023-11-01T23:20:37Z"
+        },
+        {
+          "author": "goelvidhi",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This issue has been resolved in latest draft.",
+          "createdAt": "2024-03-20T01:55:56Z",
+          "updatedAt": "2024-03-20T01:55:56Z"
         }
       ]
     },
@@ -87,6 +94,22 @@
       "body": "In RFC 9000:\r\n\r\nAssume you send a number of non-ack-eliciting packets and they get CE marked. These CE marks won't be reported at all.\r\n\r\nThen after a while, you start sending data, and suddenly get an ACK frame that reports these CE marks. You now don't know if these are outdated or more recent CE marks.",
       "createdAt": "2023-11-09T16:34:45Z",
       "updatedAt": "2023-11-09T16:34:45Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 6,
+      "id": "I_kwDOKns0ts6C6-dT",
+      "title": "Add motivation for the draft",
+      "url": "https://github.com/marten-seemann/draft-seemann-quic-accurate-ack-ecn/issues/6",
+      "state": "OPEN",
+      "author": "goelvidhi",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Basically cover two items:\r\n1. Why knowing sequence of CE marked and non-CE marked packets is important. Coz it helps to order the AI and MD events accurately\r\n2. Why knowing packet number for non CE marked packets is important. Coz from packet number, we can get the packet size, which gives us total number of non CE marked bytes used for AI.",
+      "createdAt": "2024-03-20T01:57:58Z",
+      "updatedAt": "2024-03-20T01:57:58Z",
       "closedAt": null,
       "comments": []
     }
