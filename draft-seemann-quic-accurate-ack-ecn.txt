@@ -5,8 +5,8 @@
 QUIC                                                          M. Seemann
 Internet-Draft                                                          
 Intended status: Standards Track                                 V. Goel
-Expires: 20 August 2024                                       Apple Inc.
-                                                        17 February 2024
+Expires: 24 November 2024                                     Apple Inc.
+                                                             23 May 2024
 
 
                    QUIC Accurate ECN Acknowledgements
@@ -21,7 +21,9 @@ Abstract
 
    This document defines an alternative ACK frame that encodes enough
    information to indicate which ECN mark each individual packet was
-   received with.
+   received with.  This information is essential for accurately
+   performing adjustments to congestion window and sending rate of the
+   sender.
 
 About This Document
 
@@ -57,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 August 2024.
+   This Internet-Draft will expire on 24 November 2024.
 
 Copyright Notice
 
@@ -94,7 +96,19 @@ Table of Contents
    knowing that some packets were marked with Congestion Experienced
    (CE) bit, but exactly which ones.  In the general case, this is not
    possible with the standard [RFC9000] ACK frame, since it only
-   contains cumulative ECN counts.
+   contains cumulative ECN counts.  This information is helpful to
+   congestion control algorithms in following ways:
+
+   1.  To perform additive increase and multiplicative decrease
+       accurately, it is important to know the exact sequence of CE
+       marked and non-CE marked packets, as the sequence determines how
+       the congestion was experienced at the bottleneck.
+
+   2.  Some congestion control algorithms (for example L4S congestion
+       controllers, see [RFC9330]) would benefit from knowing exactly
+       which packets were not CE-marked.  These algorithms apply an
+       additive increase for non-CE marked packets even if some other
+       packets were CE marked in the same round trip.
 
    This document defines an alternative ACK frame, the ACCURATE_ACK_ECN
    frame, which encodes the corresponding ECN codepoint alongside the
@@ -304,6 +318,12 @@ Table of Contents
               Multiplexed and Secure Transport", RFC 9000,
               DOI 10.17487/RFC9000, May 2021,
               <https://www.rfc-editor.org/rfc/rfc9000>.
+
+   [RFC9330]  Briscoe, B., Ed., De Schepper, K., Bagnulo, M., and G.
+              White, "Low Latency, Low Loss, and Scalable Throughput
+              (L4S) Internet Service: Architecture", RFC 9330,
+              DOI 10.17487/RFC9330, January 2023,
+              <https://www.rfc-editor.org/rfc/rfc9330>.
 
    [RFC9331]  De Schepper, K. and B. Briscoe, Ed., "The Explicit
               Congestion Notification (ECN) Protocol for Low Latency,

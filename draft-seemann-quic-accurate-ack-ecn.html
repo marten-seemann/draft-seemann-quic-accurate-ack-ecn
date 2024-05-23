@@ -13,21 +13,23 @@ each of the three ECN codepoints (ECT(1), ECT(0) and CE). From this information,
 the recipient of the ACK frame cannot deduce which ECN marking the individual
 packets were received with. 
        This document defines an alternative ACK frame that encodes enough information
-to indicate which ECN mark each individual packet was received with. 
+to indicate which ECN mark each individual packet was received with. This
+information is essential for accurately performing adjustments to congestion
+window and sending rate of the sender. 
     " name="description">
-<meta content="xml2rfc 3.19.2" name="generator">
+<meta content="xml2rfc 3.21.0" name="generator">
 <meta content="QUIC" name="keyword">
 <meta content="ECN" name="keyword">
 <meta content="draft-seemann-quic-accurate-ack-ecn-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.19.2
-    Python 3.11.6
+  xml2rfc 3.21.0
+    Python 3.11.9
     ConfigArgParse 1.7
     google-i18n-address 3.1.0
     intervaltree 3.1.0
     Jinja2 3.1.2
     lxml 4.9.3
-    platformdirs 4.2.0
+    platformdirs 4.2.1
     pycountry 22.3.5
     PyYAML 6.0.1
     requests 2.31.0
@@ -1032,11 +1034,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">QUIC Accurate ECN Acknowledgements</td>
-<td class="right">February 2024</td>
+<td class="right">May 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Seemann &amp; Goel</td>
-<td class="center">Expires 20 August 2024</td>
+<td class="center">Expires 24 November 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1049,12 +1051,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-seemann-quic-accurate-ack-ecn-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-02-17" class="published">17 February 2024</time>
+<time datetime="2024-05-23" class="published">23 May 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-08-20">20 August 2024</time></dd>
+<dd class="expires"><time datetime="2024-11-24">24 November 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1075,7 +1077,9 @@ each of the three ECN codepoints (ECT(1), ECT(0) and CE). From this information,
 the recipient of the ACK frame cannot deduce which ECN marking the individual
 packets were received with.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 <p id="section-abstract-2">This document defines an alternative ACK frame that encodes enough information
-to indicate which ECN mark each individual packet was received with.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+to indicate which ECN mark each individual packet was received with. This
+information is essential for accurately performing adjustments to congestion
+window and sending rate of the sender.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1112,7 +1116,7 @@ to indicate which ECN mark each individual packet was received with.<a href="#se
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 20 August 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 24 November 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1192,8 +1196,22 @@ to indicate which ECN mark each individual packet was received with.<a href="#se
 that some packets were marked with Congestion Experienced (CE) bit,
 but exactly which ones. In the general case,
 this is not possible with the standard <span>[<a href="#RFC9000" class="cite xref">RFC9000</a>]</span> ACK frame, since it only
-contains cumulative ECN counts.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">This document defines an alternative ACK frame, the ACCURATE_ACK_ECN frame,
+contains cumulative ECN counts. This information is helpful to congestion
+control algorithms in following ways:<a href="#section-1-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-1-2">
+<li id="section-1-2.1">
+          <p id="section-1-2.1.1">To perform additive increase and multiplicative decrease accurately, it is
+important to know the exact sequence of CE marked and non-CE marked packets, as
+the sequence determines how the congestion was experienced at the bottleneck.<a href="#section-1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-1-2.2">
+          <p id="section-1-2.2.1">Some congestion control algorithms (for example L4S congestion controllers, see
+<span>[<a href="#RFC9330" class="cite xref">RFC9330</a>]</span>) would benefit from knowing exactly which packets were not
+CE-marked. These algorithms apply an additive increase for non-CE marked packets
+even if some other packets were CE marked in the same round trip.<a href="#section-1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ol>
+<p id="section-1-3">This document defines an alternative ACK frame, the ACCURATE_ACK_ECN frame,
 which encodes the corresponding ECN codepoint alongside the ACK range.
 This encoding comes at a cost: In the presence of ECN markings, this will lead
 to ACCURATE_ACK_ECN frames containing more ACK ranges compared to a regular
@@ -1202,7 +1220,7 @@ ACCURATE_ACK_ECN frames.
 For example, in the steady state, L4S <span>[<a href="#RFC9331" class="cite xref">RFC9331</a>]</span> applies the CE marking to two
 packets per roundtrip. In the absence of packet loss, two of the
 ACCURATE_ACK_ECN frames sent during that RTT would contain two ACK ranges
-instead of one.<a href="#section-1-2" class="pilcrow">¶</a></p>
+instead of one.<a href="#section-1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-and-definitions">
@@ -1454,6 +1472,10 @@ ACCURATE_ACK_ECN frame containing a few hundred ACK ranges efficiently.<a href="
 <dt id="RFC9000">[RFC9000]</dt>
       <dd>
 <span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">M. Thomson, Ed.</span>, <span class="refTitle">"QUIC: A UDP-Based Multiplexed and Secure Transport"</span>, <span class="seriesInfo">RFC 9000</span>, <span class="seriesInfo">DOI 10.17487/RFC9000</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9000">https://www.rfc-editor.org/rfc/rfc9000</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9330">[RFC9330]</dt>
+      <dd>
+<span class="refAuthor">Briscoe, B., Ed.</span>, <span class="refAuthor">De Schepper, K.</span>, <span class="refAuthor">Bagnulo, M.</span>, and <span class="refAuthor">G. White</span>, <span class="refTitle">"Low Latency, Low Loss, and Scalable Throughput (L4S) Internet Service: Architecture"</span>, <span class="seriesInfo">RFC 9330</span>, <span class="seriesInfo">DOI 10.17487/RFC9330</span>, <time datetime="2023-01" class="refDate">January 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9330">https://www.rfc-editor.org/rfc/rfc9330</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9331">[RFC9331]</dt>
     <dd>
