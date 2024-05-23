@@ -57,12 +57,12 @@ that some packets were marked with Congestion Experienced (CE) bit,
 but exactly which ones. In the general case,
 this is not possible with the standard {{!RFC9000}} ACK frame, since it only
 contains cumulative ECN counts. This information is helpful to congestion
-control algorithms in following ways.
+control algorithms in following ways:
 
 1. To perform additive increase and multiplicative decrease accurately, it is
-important to know the exact sequence of CE marked and non-CE marked packets as
+important to know the exact sequence of CE marked and non-CE marked packets, as
 the sequence determines how the congestion was experienced at the bottleneck.
-2. Some congestion control algorithms (for example, L4S congestion controllers, see
+2. Some congestion control algorithms (for example L4S congestion controllers, see
 {{!RFC9330}}) would benefit from knowing exactly which packets were not
 CE-marked. These algorithms apply an additive increase for non-CE marked packets
 even if some other packets were CE marked in the same round trip.
