@@ -44,7 +44,9 @@ the recipient of the ACK frame cannot deduce which ECN marking the individual
 packets were received with.
 
 This document defines an alternative ACK frame that encodes enough information
-to indicate which ECN mark each individual packet was received with.
+to indicate which ECN mark each individual packet was received with. This
+information is essential for accurately performing adjustments to congestion
+window and sending rate of the sender.
 
 --- middle
 
@@ -54,7 +56,16 @@ Some congestion control algorithms would benefit from not only knowing
 that some packets were marked with Congestion Experienced (CE) bit,
 but exactly which ones. In the general case,
 this is not possible with the standard {{!RFC9000}} ACK frame, since it only
-contains cumulative ECN counts.
+contains cumulative ECN counts. This information is helpful to congestion
+control algorithms in following ways:
+
+1. To perform additive increase and multiplicative decrease accurately, it is
+important to know the exact sequence of CE marked and non-CE marked packets, as
+the sequence determines how the congestion was experienced at the bottleneck.
+2. Some congestion control algorithms (for example L4S congestion controllers, see
+{{!RFC9330}}) would benefit from knowing exactly which packets were not
+CE-marked. These algorithms apply an additive increase for non-CE marked packets
+even if some other packets were CE marked in the same round trip.
 
 This document defines an alternative ACK frame, the ACCURATE_ACK_ECN frame,
 which encodes the corresponding ECN codepoint alongside the ACK range.
