@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-05-23T00:14:42.204718+00:00",
+  "timestamp": "2024-05-26T00:16:16.435175+00:00",
   "repo": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
   "labels": [
     {
@@ -102,16 +102,24 @@
       "id": "I_kwDOKns0ts6C6-dT",
       "title": "Add motivation for the draft",
       "url": "https://github.com/marten-seemann/draft-seemann-quic-accurate-ack-ecn/issues/6",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "goelvidhi",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Basically cover two items:\r\n1. Why knowing sequence of CE marked and non-CE marked packets is important. Coz it helps to order the AI and MD events accurately\r\n2. Why knowing packet number for non CE marked packets is important. Coz from packet number, we can get the packet size, which gives us total number of non CE marked bytes used for AI.",
       "createdAt": "2024-03-20T01:57:58Z",
-      "updatedAt": "2024-03-20T01:57:58Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2024-05-23T05:42:46Z",
+      "closedAt": "2024-05-23T05:42:46Z",
+      "comments": [
+        {
+          "author": "marten-seemann",
+          "authorAssociation": "OWNER",
+          "body": "Fixed by #7.",
+          "createdAt": "2024-05-23T05:42:46Z",
+          "updatedAt": "2024-05-23T05:42:46Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -267,6 +275,67 @@
       },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 7,
+      "id": "PR_kwDOKns0ts5wR9iG",
+      "title": "add motivation in the intro section.",
+      "url": "https://github.com/marten-seemann/draft-seemann-quic-accurate-ack-ecn/pull/7",
+      "state": "MERGED",
+      "author": "goelvidhi",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I added the reason why this information is important in the Introduction section. Let me know if we need to create a separate section for this.",
+      "createdAt": "2024-05-23T05:20:25Z",
+      "updatedAt": "2024-05-23T05:42:31Z",
+      "baseRepository": "marten-seemann/draft-seemann-quic-accurate-ack-ecn",
+      "baseRefName": "main",
+      "baseRefOid": "20a33858e283be125a3b737792a5155370bbda33",
+      "headRepository": "goelvidhi/draft-seemann-quic-accurate-ack-ecn",
+      "headRefName": "add-motivation",
+      "headRefOid": "f97885da931efe74a2f56482b3c24eeaaa67b08e",
+      "closedAt": "2024-05-23T05:42:31Z",
+      "mergedAt": "2024-05-23T05:42:31Z",
+      "mergedBy": "marten-seemann",
+      "mergeCommit": {
+        "oid": "9309a035774735ab39f3517755ec2d0622007a2d"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKns0ts57jdBp",
+          "commit": {
+            "abbreviatedOid": "a668ae1"
+          },
+          "author": "marten-seemann",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-05-23T05:38:52Z",
+          "updatedAt": "2024-05-23T05:39:51Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "```suggestion\r\ncontrol algorithms in following ways:\r\n```",
+              "createdAt": "2024-05-23T05:38:52Z",
+              "updatedAt": "2024-05-23T05:39:51Z"
+            },
+            {
+              "originalPosition": 20,
+              "body": "```suggestion\r\nimportant to know the exact sequence of CE marked and non-CE marked packets, as\r\n```",
+              "createdAt": "2024-05-23T05:39:18Z",
+              "updatedAt": "2024-05-23T05:39:51Z"
+            },
+            {
+              "originalPosition": 22,
+              "body": "```suggestion\r\n2. Some congestion control algorithms (for example L4S congestion controllers, see\r\n```",
+              "createdAt": "2024-05-23T05:39:37Z",
+              "updatedAt": "2024-05-23T05:39:51Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
